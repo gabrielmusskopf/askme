@@ -5,7 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -26,10 +26,10 @@ public class UserAnswer {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "question_id")
   private Question question;
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "answer_id")
   private Answer answer;
 

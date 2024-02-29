@@ -27,11 +27,11 @@ public class AnswerQuestionImpl implements AnswerQuestionService {
     final var answerUuid = UUID.fromString(questionAnswer.answerId());
 
     final var question = questionRepository.findById(questionUuid)
-        .orElseThrow(() -> new NotFoundException("Question '" + questionId + "' not found."));
+        .orElseThrow(() -> new NotFoundException("Question not found."));
 
     final var questionAnswers = answerRepository.findByQuestionId(questionUuid);
     if (doesQuestionNotHaveThisAnswer(questionAnswers, answerUuid)) {
-      throw new InvalidAnwserException("Question '" + questionUuid + "' does not have this answer.");
+      throw new InvalidAnwserException("Question does not have this answer.");
     }
 
     final var matchedAnswer = questionAnswers.stream()

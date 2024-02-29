@@ -20,7 +20,8 @@ public class ControllerExceptionAdvice extends ResponseEntityExceptionHandler {
   @ExceptionHandler({Exception.class})
   protected ResponseEntity<Object> handleGlobal(Exception ex, HttpServletRequest request) {
     var error = Error.internalError()
-        .withMessage(ex.getMessage())
+        .withMessage("Something worng happended. Try again later.")
+        .withReason(ex.getMessage())
         .withDetail(request.getRequestURI())
         .withTimestamp(LocalDateTime.now());
 
