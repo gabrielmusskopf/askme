@@ -1,5 +1,7 @@
 package br.com.gabrielgmusskopf.myquestion.infra.in;
 
+import br.com.gabrielgmusskopf.myquestion.domain.AnswerQuestionService;
+import br.com.gabrielgmusskopf.myquestion.domain.AnswerQuestionService.QuestionAnswerDTO;
 import br.com.gabrielgmusskopf.myquestion.domain.CreateQuestionService;
 import br.com.gabrielgmusskopf.myquestion.domain.CreateQuestionService.CreateQuestionDTO;
 import br.com.gabrielgmusskopf.myquestion.domain.GetAnswerService;
@@ -10,11 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,8 +28,10 @@ public class QuestionController {
 
   private final CreateQuestionService createQuestionService;
   private final GetAnswerService getAnswerService;
+  private final AnswerQuestionService answerQuestionService;
 
   @PostMapping
+  @ResponseStatus(HttpStatus.CREATED)
   public IdDTO create(@RequestBody @Valid CreateQuestionDTO createQuestion) {
     final var question = createQuestionService.create(createQuestion);
     return new IdDTO(question.getId());
@@ -49,8 +55,9 @@ public class QuestionController {
     return questions;
   }
 
-  public void answer(@RequestBody @Valid QuestionAnswerDTO questionAnswer) {
-
+  @PostMapping("/{questionId}/answer")
+  public void answer(@PathVariable String questionId, @RequestBody @Valid QuestionAnswerDTO questionAnswer) {
+    answerQuestionService.answer(questionId, questionAnswer);
   }
 
   record QuestionDTO(String id, String text, List<AnswerDTO> answers) {

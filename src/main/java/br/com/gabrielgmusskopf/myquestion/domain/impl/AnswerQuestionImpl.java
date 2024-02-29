@@ -5,7 +5,9 @@ import br.com.gabrielgmusskopf.myquestion.domain.exception.InvalidAnwserExceptio
 import br.com.gabrielgmusskopf.myquestion.domain.exception.NotFoundException;
 import br.com.gabrielgmusskopf.myquestion.infra.data.AnswerRepository;
 import br.com.gabrielgmusskopf.myquestion.infra.data.QuestionRepository;
+import br.com.gabrielgmusskopf.myquestion.infra.data.UserAnswerRepository;
 import br.com.gabrielgmusskopf.myquestion.model.Answer;
+import br.com.gabrielgmusskopf.myquestion.model.UserAnswer;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -17,21 +19,27 @@ public class AnswerQuestionImpl implements AnswerQuestionService {
 
   private final QuestionRepository questionRepository;
   private final AnswerRepository answerRepository;
+  private final UserAnswerRepository userAnswerRepository;
 
   @Override
-  public void answer(QuestionAnswerDTO questionAnswer) {
-    final var questionUuid = UUID.fromString(questionAnswer.questionId());
+  public void answer(String questionId, QuestionAnswerDTO questionAnswer) {
+    final var questionUuid = UUID.fromString(questionId);
     final var answerUuid = UUID.fromString(questionAnswer.answerId());
 
     final var question = questionRepository.findById(questionUuid)
-        .orElseThrow(() -> new NotFoundException("Question '" + questionAnswer.questionId() + "' not found."));
+        .orElseThrow(() -> new NotFoundException("Question '" + questionId + "' not found."));
 
     final var questionAnswers = answerRepository.findByQuestionId(questionUuid);
     if (doesQuestionNotHaveThisAnswer(questionAnswers, answerUuid)) {
       throw new InvalidAnwserException("Question '" + questionUuid + "' does not have this answer.");
     }
 
-    return null;
+    final var matchedAnswer = questionAnswers.stream()
+        .filter(qa -> qa.getId().equals(answerUuid))
+        .findFirst()
+        .orElseThrow();
+
+    userAnswerRepository.save(new UserAnswer(question, matchedAnswer));
   }
 
   private boolean doesQuestionNotHaveThisAnswer(List<Answer> questionAnswers, UUID answerUuid) {

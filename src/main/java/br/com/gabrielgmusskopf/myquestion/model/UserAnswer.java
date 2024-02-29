@@ -27,10 +27,15 @@ public class UserAnswer {
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
   @OneToOne
-  @JoinColumn(name = "user_id")
-  private User user;
-  @OneToOne
   @JoinColumn(name = "question_id")
   private Question question;
+  @OneToOne
+  @JoinColumn(name = "answer_id")
+  private Answer answer;
+
+  public UserAnswer(Question question, Answer answer) {
+    this.question = question;
+    this.answer = answer;
+  }
 
 }
