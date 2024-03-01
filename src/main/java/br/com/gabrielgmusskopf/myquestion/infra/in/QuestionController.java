@@ -7,6 +7,7 @@ import br.com.gabrielgmusskopf.myquestion.domain.CreateQuestionService.CreateQue
 import br.com.gabrielgmusskopf.myquestion.domain.GetAnswerService;
 import br.com.gabrielgmusskopf.myquestion.infra.IdDTO;
 import br.com.gabrielgmusskopf.myquestion.model.Answer;
+import br.com.gabrielgmusskopf.myquestion.model.Category;
 import jakarta.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,12 @@ public class QuestionController {
           var ans = qas.stream()
               .map(qa -> new AnswerDTO(qa.getId().toString(), qa.getText()))
               .toList();
+          var categories = q.getCategories()
+              .stream()
+              .map(Category::getName)
+              .toList();
 
-          questions.add(new QuestionDTO(q.getId().toString(), q.getText(), ans));
+          questions.add(new QuestionDTO(q.getId().toString(), q.getText(), categories, ans));
         });
 
     return questions;
@@ -60,7 +65,7 @@ public class QuestionController {
     answerQuestionService.answer(questionId, questionAnswer);
   }
 
-  record QuestionDTO(String id, String text, List<AnswerDTO> answers) {
+  record QuestionDTO(String id, String text, List<String> categories, List<AnswerDTO> answers) {
   }
 
   record AnswerDTO(String id, String text) {
