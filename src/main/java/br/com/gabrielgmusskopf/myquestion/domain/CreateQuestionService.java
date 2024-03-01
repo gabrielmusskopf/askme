@@ -7,7 +7,7 @@ public interface CreateQuestionService {
 
   Question create(CreateQuestionDTO question);
 
-  record CreateQuestionDTO(String text, List<CreateQuestionAnswserDTO> answers) {
+  record CreateQuestionDTO(String text, List<CreateQuestionAnswserDTO> answers, List<String> categories) {
 
   }
 
