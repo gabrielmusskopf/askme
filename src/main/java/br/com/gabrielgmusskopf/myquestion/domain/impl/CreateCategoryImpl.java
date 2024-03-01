@@ -52,7 +52,11 @@ class CreateCategoryImpl implements CreateCategoryService {
   }
 
   private String normalizeCategory(String category) {
-    return Normalizer.normalize(category, Form.NFD).replaceAll("\\p{M}", "").toUpperCase().replace(" ", "_");
+    return Normalizer.normalize(category, Form.NFD)
+        .replaceAll("\\p{M}", "")
+        .replace("[^a-zA-Z0-9]", "")
+        .toUpperCase()
+        .replace(" ", "_").trim();
   }
 
 }

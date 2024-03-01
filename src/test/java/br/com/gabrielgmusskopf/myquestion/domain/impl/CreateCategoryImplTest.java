@@ -49,7 +49,7 @@ class CreateCategoryImplTest {
   @Test
   void shouldCreateNormalizedNewCategories() {
     // Arange
-    final var categories = List.of("Jávâ", "Prǒgràmmíñg Lǻnguáge");
+    final var categories = List.of(" !? %& Jávâ !@#$%¨&*())_+=- ", "Prǒgràmmíñg Lǻnguáge");
     final var savedCategoriesNames = List.of("JAVA", "PROGRAMMING_LANGUAGE");
 
     when(categoryRepository.findByNameInIgnoreCase(categories)).thenReturn(Collections.emptyList());
