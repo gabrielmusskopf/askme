@@ -7,6 +7,8 @@ import br.com.gabrielgmusskopf.askme.domain.CreateQuestionService.CreateQuestion
 import br.com.gabrielgmusskopf.askme.domain.GetQuestionsService;
 import br.com.gabrielgmusskopf.askme.domain.GetQuestionsService.GetQuestionsDTO;
 import br.com.gabrielgmusskopf.askme.domain.enums.Level;
+import br.com.gabrielgmusskopf.askme.domain.exception.BusinessException;
+import br.com.gabrielgmusskopf.askme.domain.exception.NotFoundException;
 import br.com.gabrielgmusskopf.askme.infra.IdDTO;
 import jakarta.validation.Valid;
 import java.util.List;
@@ -38,7 +40,7 @@ class QuestionController {
   }
 
   @GetMapping("/{questionId}")
-  public QuestionDTO get(@PathVariable String questionId) {
+  public QuestionDTO get(@PathVariable String questionId) throws NotFoundException {
     return QuestionMapper.toDTO(getQuestionsService.get(questionId));
   }
 
@@ -53,7 +55,8 @@ class QuestionController {
   }
 
   @PostMapping("/{questionId}/answer")
-  public void answer(@PathVariable String questionId, @RequestBody @Valid QuestionAnswerDTO questionAnswer) {
+  public void answer(@PathVariable String questionId, @RequestBody @Valid QuestionAnswerDTO questionAnswer)
+      throws NotFoundException, BusinessException {
     answerQuestionService.answer(questionId, questionAnswer);
   }
 

@@ -1,6 +1,7 @@
 package br.com.gabrielgmusskopf.askme.infra;
 
 import br.com.gabrielgmusskopf.askme.domain.exception.BusinessException;
+import br.com.gabrielgmusskopf.askme.domain.exception.NotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -39,6 +40,16 @@ public class ControllerExceptionAdvice {
   @ExceptionHandler({BusinessException.class})
   protected ResponseEntity<Object> handleBusiness(BusinessException ex, HttpServletRequest request) {
     var error = Error.badRequest()
+        .withMessage(ex.getMessage())
+        .withDetail(completeURI(request))
+        .withTimestamp(LocalDateTime.now());
+
+    return toResponseEntity(error);
+  }
+
+  @ExceptionHandler({NotFoundException.class})
+  protected ResponseEntity<Object> handleNotFound(NotFoundException ex, HttpServletRequest request) {
+    var error = Error.notFound()
         .withMessage(ex.getMessage())
         .withDetail(completeURI(request))
         .withTimestamp(LocalDateTime.now());
