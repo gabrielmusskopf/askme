@@ -1,11 +1,15 @@
 package br.com.gabrielgmusskopf.askme.domain;
 
+import br.com.gabrielgmusskopf.askme.domain.dto.PagedContent;
 import br.com.gabrielgmusskopf.askme.domain.enums.Level;
 import java.util.List;
 
 public interface GetAnsweredQuestionsService {
 
-  List<AnsweredQuestionDTO> getAll();
+  PagedContent<List<AnsweredQuestionDTO>> get(GetAnsweredQuestionsDTO getAnsweredQuestions);
+
+  record GetAnsweredQuestionsDTO(Level level, List<String> categories, int page, int limit) {
+  }
 
   record AnsweredQuestionDTO(QuestionDTO question, AnswerDTO answer) {
   }
