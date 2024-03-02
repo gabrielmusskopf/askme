@@ -6,7 +6,7 @@ import br.com.gabrielgmusskopf.askme.model.Question;
 import org.mapstruct.Mapper;
 
 @Mapper
-public interface UserAnswerMapper {
+interface UserAnswerMapper {
 
   GetAnsweredQuestionsService.AnswerDTO toDTO(Answer answer);
 

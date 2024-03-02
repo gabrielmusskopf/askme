@@ -2,10 +2,9 @@ package br.com.gabrielgmusskopf.askme.domain.impl;
 
 import br.com.gabrielgmusskopf.askme.domain.CreateCategoryService;
 import br.com.gabrielgmusskopf.askme.domain.exception.InvalidCategoryException;
+import br.com.gabrielgmusskopf.askme.domain.util.CategoryUtil;
 import br.com.gabrielgmusskopf.askme.infra.data.CategoryRepository;
 import br.com.gabrielgmusskopf.askme.model.Category;
-import java.text.Normalizer;
-import java.text.Normalizer.Form;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -43,7 +42,7 @@ class CreateCategoryImpl implements CreateCategoryService {
 
     final var newCategories = categories.stream()
         .filter(Objects::nonNull)
-        .map(this::normalizeCategory)
+        .map(CategoryUtil::normalize)
         .filter(c -> !existingCategoriesNames.contains(c))
         .map(Category::new)
         .toList();
@@ -56,14 +55,6 @@ class CreateCategoryImpl implements CreateCategoryService {
     return Stream.of(existingCategories, newCategories)
         .flatMap(Collection::stream)
         .toList();
-  }
-
-  private String normalizeCategory(String category) {
-    return Normalizer.normalize(category, Form.NFD)
-        .replaceAll("\\p{M}", "")
-        .replace("[^a-zA-Z0-9]", "")
-        .toUpperCase()
-        .replace(" ", "_").trim();
   }
 
 }
