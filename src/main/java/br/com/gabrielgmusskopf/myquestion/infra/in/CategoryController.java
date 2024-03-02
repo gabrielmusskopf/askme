@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("v1/category")
 @RequiredArgsConstructor
-public class CategoryController {
+class CategoryController {
 
   private final GetScoreService getScoreService;
 

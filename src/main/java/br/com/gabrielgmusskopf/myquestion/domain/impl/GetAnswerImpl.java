@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GetAnswerImpl implements GetAnswerService {
+class GetAnswerImpl implements GetAnswerService {
 
   private final QuestionRepository questionRepository;
   private final AnswerRepository answerRepository;

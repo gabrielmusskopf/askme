@@ -1,8 +1,8 @@
 package br.com.gabrielgmusskopf.myquestion.domain.impl;
 
 import br.com.gabrielgmusskopf.myquestion.domain.GetQuestionsService;
-import br.com.gabrielgmusskopf.myquestion.domain.MathUtil;
 import br.com.gabrielgmusskopf.myquestion.domain.exception.NotFoundException;
+import br.com.gabrielgmusskopf.myquestion.domain.util.MathUtil;
 import br.com.gabrielgmusskopf.myquestion.infra.data.QuestionRepository;
 import br.com.gabrielgmusskopf.myquestion.infra.data.QuestionSpecification;
 import br.com.gabrielgmusskopf.myquestion.model.Question;

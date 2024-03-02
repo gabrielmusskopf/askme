@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class GetScoreImpl implements GetScoreService {
+class GetScoreImpl implements GetScoreService {
 
   private static final Boolean RIGHT = Boolean.TRUE;
   private static final Boolean WRONG = Boolean.FALSE;

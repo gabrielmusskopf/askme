@@ -1,4 +1,4 @@
-package br.com.gabrielgmusskopf.myquestion.domain;
+package br.com.gabrielgmusskopf.myquestion.domain.util;
 
 import java.util.Random;
 import lombok.experimental.UtilityClass;

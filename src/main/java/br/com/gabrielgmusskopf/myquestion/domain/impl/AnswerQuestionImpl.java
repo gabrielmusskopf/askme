@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AnswerQuestionImpl implements AnswerQuestionService {
+class AnswerQuestionImpl implements AnswerQuestionService {
 
   private final QuestionRepository questionRepository;
   private final AnswerRepository answerRepository;

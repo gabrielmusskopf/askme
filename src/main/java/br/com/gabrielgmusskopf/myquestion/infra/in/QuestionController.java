@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("v1/questions")
 @RequiredArgsConstructor
-public class QuestionController {
+class QuestionController {
 
   private final CreateQuestionService createQuestionService;
   private final GetQuestionsService getQuestionsService;
