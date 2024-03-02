@@ -10,8 +10,10 @@ import br.com.gabrielgmusskopf.myquestion.model.Answer;
 import br.com.gabrielgmusskopf.myquestion.model.Question;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 class CreateQuestionImpl implements CreateQuestionService {
@@ -33,13 +35,20 @@ class CreateQuestionImpl implements CreateQuestionService {
           "Must have exaclty one right answer.");
     }
 
+    log.debug("Creating question");
     final var categories = createCategoryService.findOrCreate(createQuestion.categories());
     final var answers = createQuestion.answers().stream()
         .map(a -> new Answer(a.text(), a.isRight()))
         .toList();
 
     answerRepository.saveAll(answers);
-    return questionRepository.save(new Question(createQuestion.text(), createQuestion.level(), answers, categories));
+    final var question = questionRepository.save(
+        new Question(createQuestion.text(), createQuestion.level(), answers, categories)
+    );
+
+    log.info("Question {} created", question.getId());
+
+    return question;
   }
 
   private boolean exactlyOneCorrectAnswer(CreateQuestionDTO createQuestion) {

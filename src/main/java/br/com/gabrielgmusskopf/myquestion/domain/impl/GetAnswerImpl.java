@@ -8,8 +8,10 @@ import br.com.gabrielgmusskopf.myquestion.model.Answer;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 class GetAnswerImpl implements GetAnswerService {
@@ -28,6 +30,7 @@ class GetAnswerImpl implements GetAnswerService {
     if (!questionRepository.existsById(questionUuid)) {
       throw new NotFoundException("Question '" + questionId + "' not found.");
     }
+    log.debug("Finding question {}", questionId);
 
     return answerRepository.findByQuestionId(questionUuid);
   }

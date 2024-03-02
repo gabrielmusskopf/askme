@@ -12,8 +12,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 class CreateCategoryImpl implements CreateCategoryService {
@@ -34,6 +36,7 @@ class CreateCategoryImpl implements CreateCategoryService {
     if (categories == null || categories.isEmpty()) {
       return Collections.emptyList();
     }
+    log.debug("Finding or creating categories");
     final var existingCategories = categoryRepository.findByNameInIgnoreCase(categories);
     final var existingCategoriesNames = existingCategories.stream().map(Category::getName).map(String::toUpperCase)
         .toList();
@@ -45,7 +48,10 @@ class CreateCategoryImpl implements CreateCategoryService {
         .map(Category::new)
         .toList();
 
-    categoryRepository.saveAll(newCategories);
+    if (!newCategories.isEmpty()) {
+      categoryRepository.saveAll(newCategories);
+      log.debug("New categories created: {}", newCategories.stream().map(Category::getName).toList());
+    }
 
     return Stream.of(existingCategories, newCategories)
         .flatMap(Collection::stream)

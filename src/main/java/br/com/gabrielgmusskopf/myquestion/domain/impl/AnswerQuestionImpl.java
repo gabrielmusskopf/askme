@@ -11,8 +11,10 @@ import br.com.gabrielgmusskopf.myquestion.model.UserAnswer;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 class AnswerQuestionImpl implements AnswerQuestionService {
@@ -33,6 +35,7 @@ class AnswerQuestionImpl implements AnswerQuestionService {
     if (doesQuestionNotHaveThisAnswer(questionAnswers, answerUuid)) {
       throw new InvalidAnwserException("Question does not have this answer.");
     }
+    log.debug("Answering question {}", questionId);
 
     final var matchedAnswer = questionAnswers.stream()
         .filter(qa -> qa.getId().equals(answerUuid))
@@ -40,6 +43,7 @@ class AnswerQuestionImpl implements AnswerQuestionService {
         .orElseThrow();
 
     userAnswerRepository.save(new UserAnswer(question, matchedAnswer));
+    log.info("Answered question {} with {}", questionId, matchedAnswer.getId());
   }
 
   private boolean doesQuestionNotHaveThisAnswer(List<Answer> questionAnswers, UUID answerUuid) {
