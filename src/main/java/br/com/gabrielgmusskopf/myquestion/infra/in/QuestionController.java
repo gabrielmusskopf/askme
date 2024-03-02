@@ -4,14 +4,12 @@ import br.com.gabrielgmusskopf.myquestion.domain.AnswerQuestionService;
 import br.com.gabrielgmusskopf.myquestion.domain.AnswerQuestionService.QuestionAnswerDTO;
 import br.com.gabrielgmusskopf.myquestion.domain.CreateQuestionService;
 import br.com.gabrielgmusskopf.myquestion.domain.CreateQuestionService.CreateQuestionDTO;
-import br.com.gabrielgmusskopf.myquestion.domain.GetAnswerService;
+import br.com.gabrielgmusskopf.myquestion.domain.GetQuestionsService;
+import br.com.gabrielgmusskopf.myquestion.domain.GetQuestionsService.GetQuestionsDTO;
+import br.com.gabrielgmusskopf.myquestion.domain.enums.Level;
 import br.com.gabrielgmusskopf.myquestion.infra.IdDTO;
-import br.com.gabrielgmusskopf.myquestion.model.Answer;
-import br.com.gabrielgmusskopf.myquestion.model.Category;
 import jakarta.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class QuestionController {
 
   private final CreateQuestionService createQuestionService;
-  private final GetAnswerService getAnswerService;
+  private final GetQuestionsService getQuestionsService;
   private final AnswerQuestionService answerQuestionService;
 
   @PostMapping
@@ -39,25 +38,18 @@ public class QuestionController {
   }
 
   @GetMapping("/{questionId}")
-  public List<QuestionDTO> get(@PathVariable String questionId) {
-    final var answers = getAnswerService.getByQuestionID(questionId);
-    final List<QuestionDTO> questions = new ArrayList<>();
+  public QuestionDTO get(@PathVariable String questionId) {
+    return QuestionMapper.toDTO(getQuestionsService.get(questionId));
+  }
 
-    answers.stream()
-        .collect(Collectors.groupingBy(Answer::getQuestion))
-        .forEach((q, qas) -> {
-          var ans = qas.stream()
-              .map(qa -> new AnswerDTO(qa.getId().toString(), qa.getText()))
-              .toList();
-          var categories = q.getCategories()
-              .stream()
-              .map(Category::getName)
-              .toList();
-
-          questions.add(new QuestionDTO(q.getId().toString(), q.getText(), categories, ans));
-        });
-
-    return questions;
+  @GetMapping("/random")
+  public List<QuestionDTO> getRandom(@RequestParam(name = "quantity", defaultValue = "1") int quantity,
+                                     @RequestParam(name = "level", required = false) Level level,
+                                     @RequestParam(name = "category", required = false) List<String> categories) {
+    return getQuestionsService.get(new GetQuestionsDTO(quantity, level, categories))
+        .stream()
+        .map(QuestionMapper::toDTO)
+        .toList();
   }
 
   @PostMapping("/{questionId}/answer")

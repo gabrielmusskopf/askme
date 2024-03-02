@@ -35,12 +35,13 @@ class CreateCategoryImpl implements CreateCategoryService {
       return Collections.emptyList();
     }
     final var existingCategories = categoryRepository.findByNameInIgnoreCase(categories);
-    final var existingCategoriesNames = existingCategories.stream().map(Category::getName).toList();
+    final var existingCategoriesNames = existingCategories.stream().map(Category::getName).map(String::toUpperCase)
+        .toList();
 
     final var newCategories = categories.stream()
         .filter(Objects::nonNull)
-        .filter(c -> !existingCategoriesNames.contains(c))
         .map(this::normalizeCategory)
+        .filter(c -> !existingCategoriesNames.contains(c))
         .map(Category::new)
         .toList();
 

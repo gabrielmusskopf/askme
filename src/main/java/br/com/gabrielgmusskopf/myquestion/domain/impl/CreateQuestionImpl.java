@@ -34,13 +34,12 @@ public class CreateQuestionImpl implements CreateQuestionService {
     }
 
     final var categories = createCategoryService.findOrCreate(createQuestion.categories());
-    final var question = questionRepository.save(new Question(createQuestion.text(), categories));
     final var answers = createQuestion.answers().stream()
-        .map(a -> new Answer(a.text(), question, a.isRight()))
+        .map(a -> new Answer(a.text(), a.isRight()))
         .toList();
 
     answerRepository.saveAll(answers);
-    return question;
+    return questionRepository.save(new Question(createQuestion.text(), createQuestion.level(), answers, categories));
   }
 
   private boolean exactlyOneCorrectAnswer(CreateQuestionDTO createQuestion) {

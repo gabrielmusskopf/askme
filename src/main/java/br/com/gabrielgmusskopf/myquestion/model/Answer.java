@@ -32,9 +32,8 @@ public class Answer {
   private Question question;
   private boolean rightAnswer;
 
-  public Answer(String text, Question question, boolean rightAnswer) {
+  public Answer(String text, boolean rightAnswer) {
     this.text = text;
-    this.question = question;
     this.rightAnswer = rightAnswer;
   }
 

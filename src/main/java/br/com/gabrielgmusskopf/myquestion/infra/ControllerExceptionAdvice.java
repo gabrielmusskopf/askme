@@ -3,15 +3,18 @@ package br.com.gabrielgmusskopf.myquestion.infra;
 import br.com.gabrielgmusskopf.myquestion.domain.exception.BusinessException;
 import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 @Slf4j
 @ControllerAdvice
-public class ControllerExceptionAdvice extends ResponseEntityExceptionHandler {
+public class ControllerExceptionAdvice {
 
   private ResponseEntity<Object> toResponseEntity(Error error) {
     return ResponseEntity
@@ -25,7 +28,7 @@ public class ControllerExceptionAdvice extends ResponseEntityExceptionHandler {
     var error = Error.internalError()
         .withMessage("Something worng happended. Try again later.")
         .withReason(ex.getMessage())
-        .withDetail(request.getRequestURI())
+        .withDetail(completeURI(request))
         .withTimestamp(LocalDateTime.now());
 
     return toResponseEntity(error);
@@ -35,10 +38,44 @@ public class ControllerExceptionAdvice extends ResponseEntityExceptionHandler {
   protected ResponseEntity<Object> handleBusiness(BusinessException ex, HttpServletRequest request) {
     var error = Error.badRequest()
         .withMessage(ex.getMessage())
-        .withDetail(request.getRequestURI())
+        .withDetail(completeURI(request))
         .withTimestamp(LocalDateTime.now());
 
     return toResponseEntity(error);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                HttpServletRequest request) {
+    final var erroMessage = ex.getFieldErrors().stream()
+        .map(e -> "'" + e.getField() + "' " + e.getDefaultMessage() + ".")
+        .collect(Collectors.joining("."));
+
+    var error = Error.badRequest()
+        .withMessage(erroMessage)
+        .withDetail(completeURI(request))
+        .withTimestamp(LocalDateTime.now());
+
+    return toResponseEntity(error);
+  }
+
+  @ExceptionHandler(MissingServletRequestParameterException.class)
+  protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+                                                                        HttpServletRequest request) {
+    var error = Error.badRequest()
+        .withMessage("'" + ex.getParameterName() + "' query param is missing.")
+        .withDetail(completeURI(request))
+        .withTimestamp(LocalDateTime.now());
+
+    return toResponseEntity(error);
+  }
+
+  private String completeURI(HttpServletRequest request) {
+    StringBuilder sb = new StringBuilder(request.getRequestURI());
+    if (StringUtils.isNotBlank(request.getQueryString())) {
+      sb.append("?").append(request.getQueryString());
+    }
+    return sb.toString();
   }
 
 }
