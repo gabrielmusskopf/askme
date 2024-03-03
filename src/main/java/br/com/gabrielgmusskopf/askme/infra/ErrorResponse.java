@@ -14,7 +14,7 @@ import org.springframework.http.HttpStatus;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Error {
+public class ErrorResponse {
 
   private int status;
   @With private String message;
@@ -22,20 +22,20 @@ public class Error {
   @With private String detail;
   @With private LocalDateTime timestamp;
 
-  private Error(HttpStatus status) {
+  private ErrorResponse(HttpStatus status) {
     this.status = status.value();
   }
 
-  public static Error badRequest() {
-    return new Error(HttpStatus.BAD_REQUEST);
+  public static ErrorResponse badRequest() {
+    return new ErrorResponse(HttpStatus.BAD_REQUEST);
   }
 
-  public static Error notFound() {
-    return new Error(HttpStatus.NOT_FOUND);
+  public static ErrorResponse notFound() {
+    return new ErrorResponse(HttpStatus.NOT_FOUND);
   }
 
-  public static Error internalError() {
-    return new Error(HttpStatus.INTERNAL_SERVER_ERROR);
+  public static ErrorResponse internalError() {
+    return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR);
   }
 
 }

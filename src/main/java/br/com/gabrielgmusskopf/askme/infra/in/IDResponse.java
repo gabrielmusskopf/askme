@@ -1,4 +1,4 @@
-package br.com.gabrielgmusskopf.askme.infra;
+package br.com.gabrielgmusskopf.askme.infra.in;
 
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -8,11 +8,11 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class IdDTO {
+class IDResponse {
 
   public String id;
 
-  public IdDTO(UUID id) {
+  public IDResponse(UUID id) {
     this.id = id.toString();
   }
 

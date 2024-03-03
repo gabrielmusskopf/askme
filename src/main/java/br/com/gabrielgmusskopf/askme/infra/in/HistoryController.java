@@ -3,7 +3,7 @@ package br.com.gabrielgmusskopf.askme.infra.in;
 import br.com.gabrielgmusskopf.askme.domain.GetAnsweredQuestionsService;
 import br.com.gabrielgmusskopf.askme.domain.GetAnsweredQuestionsService.AnsweredQuestionDTO;
 import br.com.gabrielgmusskopf.askme.domain.GetAnsweredQuestionsService.GetAnsweredQuestionsDTO;
-import br.com.gabrielgmusskopf.askme.domain.dto.PagedContent;
+import br.com.gabrielgmusskopf.askme.domain.PagedContent;
 import br.com.gabrielgmusskopf.askme.domain.enums.Level;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

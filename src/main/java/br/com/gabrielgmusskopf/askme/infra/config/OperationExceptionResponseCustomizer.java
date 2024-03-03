@@ -6,7 +6,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import br.com.gabrielgmusskopf.askme.domain.exception.BusinessException;
 import br.com.gabrielgmusskopf.askme.domain.exception.NotFoundException;
-import br.com.gabrielgmusskopf.askme.infra.Error;
+import br.com.gabrielgmusskopf.askme.infra.ErrorResponse;
 import io.swagger.v3.core.converter.AnnotatedType;
 import io.swagger.v3.core.converter.ModelConverters;
 import io.swagger.v3.oas.models.Operation;
@@ -27,7 +27,8 @@ class OperationExceptionResponseCustomizer implements OperationCustomizer {
   private static final ApiResponse INTERNAL_SERVER_ERROR_API_RESPONSE;
 
   static {
-    final var errResSchema = ModelConverters.getInstance().resolveAsResolvedSchema(new AnnotatedType(Error.class));
+    final var errResSchema = ModelConverters.getInstance()
+        .resolveAsResolvedSchema(new AnnotatedType(ErrorResponse.class));
     final var mediaType = new MediaType().schema(errResSchema.schema);
     final var content = new Content().addMediaType("application/json", mediaType);
 

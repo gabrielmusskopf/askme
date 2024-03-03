@@ -9,7 +9,6 @@ import br.com.gabrielgmusskopf.askme.domain.GetQuestionsService.GetQuestionsDTO;
 import br.com.gabrielgmusskopf.askme.domain.enums.Level;
 import br.com.gabrielgmusskopf.askme.domain.exception.BusinessException;
 import br.com.gabrielgmusskopf.askme.domain.exception.NotFoundException;
-import br.com.gabrielgmusskopf.askme.infra.IdDTO;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +33,9 @@ class QuestionController {
 
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public IdDTO create(@RequestBody @Valid CreateQuestionDTO createQuestion) {
+  public IDResponse create(@RequestBody @Valid CreateQuestionDTO createQuestion) {
     final var question = createQuestionService.create(createQuestion);
-    return new IdDTO(question.getId());
+    return new IDResponse(question.getId());
   }
 
   @GetMapping("/{questionId}")

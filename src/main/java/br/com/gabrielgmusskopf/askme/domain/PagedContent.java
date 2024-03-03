@@ -1,4 +1,4 @@
-package br.com.gabrielgmusskopf.askme.domain.dto;
+package br.com.gabrielgmusskopf.askme.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

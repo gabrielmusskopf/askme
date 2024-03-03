@@ -1,7 +1,7 @@
 package br.com.gabrielgmusskopf.askme.domain.impl;
 
 import br.com.gabrielgmusskopf.askme.domain.GetAnsweredQuestionsService;
-import br.com.gabrielgmusskopf.askme.domain.dto.PagedContent;
+import br.com.gabrielgmusskopf.askme.domain.PagedContent;
 import br.com.gabrielgmusskopf.askme.domain.util.CategoryUtil;
 import br.com.gabrielgmusskopf.askme.infra.data.UserAnswerRepository;
 import br.com.gabrielgmusskopf.askme.infra.data.UserAnswerSpecification;

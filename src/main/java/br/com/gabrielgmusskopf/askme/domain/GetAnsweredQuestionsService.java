@@ -1,6 +1,5 @@
 package br.com.gabrielgmusskopf.askme.domain;
 
-import br.com.gabrielgmusskopf.askme.domain.dto.PagedContent;
 import br.com.gabrielgmusskopf.askme.domain.enums.Level;
 import java.util.List;
 

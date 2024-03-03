@@ -17,9 +17,9 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 @Slf4j
 @ControllerAdvice
-public class ControllerExceptionAdvice {
+class ControllerExceptionAdvice {
 
-  private ResponseEntity<Object> toResponseEntity(Error error) {
+  private ResponseEntity<Object> toResponseEntity(ErrorResponse error) {
     return ResponseEntity
         .status(error.getStatus())
         .body(error);
@@ -28,7 +28,7 @@ public class ControllerExceptionAdvice {
   @ExceptionHandler({Exception.class})
   protected ResponseEntity<Object> handleGlobal(Exception ex, HttpServletRequest request) {
     log.error(ex.getMessage(), ex);
-    var error = Error.internalError()
+    var error = ErrorResponse.internalError()
         .withMessage("Something worng happended. Try again later.")
         .withReason(ex.getMessage())
         .withDetail(completeURI(request))
@@ -39,7 +39,7 @@ public class ControllerExceptionAdvice {
 
   @ExceptionHandler({BusinessException.class})
   protected ResponseEntity<Object> handleBusiness(BusinessException ex, HttpServletRequest request) {
-    var error = Error.badRequest()
+    var error = ErrorResponse.badRequest()
         .withMessage(ex.getMessage())
         .withDetail(completeURI(request))
         .withTimestamp(LocalDateTime.now());
@@ -49,7 +49,7 @@ public class ControllerExceptionAdvice {
 
   @ExceptionHandler({NotFoundException.class})
   protected ResponseEntity<Object> handleNotFound(NotFoundException ex, HttpServletRequest request) {
-    var error = Error.notFound()
+    var error = ErrorResponse.notFound()
         .withMessage(ex.getMessage())
         .withDetail(completeURI(request))
         .withTimestamp(LocalDateTime.now());
@@ -64,7 +64,7 @@ public class ControllerExceptionAdvice {
         .map(e -> "'" + e.getField() + "' " + e.getDefaultMessage() + ".")
         .collect(Collectors.joining("."));
 
-    var error = Error.badRequest()
+    var error = ErrorResponse.badRequest()
         .withMessage(erroMessage)
         .withDetail(completeURI(request))
         .withTimestamp(LocalDateTime.now());
@@ -75,7 +75,7 @@ public class ControllerExceptionAdvice {
   @ExceptionHandler(MissingServletRequestParameterException.class)
   protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
                                                                         HttpServletRequest request) {
-    var error = Error.badRequest()
+    var error = ErrorResponse.badRequest()
         .withMessage("'" + ex.getParameterName() + "' query param is missing.")
         .withDetail(completeURI(request))
         .withTimestamp(LocalDateTime.now());
@@ -93,7 +93,7 @@ public class ControllerExceptionAdvice {
       messageBuilder.append(" Valid values are ").append(Arrays.toString(requiredType.getEnumConstants()));
     }
 
-    var error = Error.badRequest()
+    var error = ErrorResponse.badRequest()
         .withMessage(messageBuilder.toString())
         .withReason(ex.getMostSpecificCause().getMessage())
         .withDetail(completeURI(request))
