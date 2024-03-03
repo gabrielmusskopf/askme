@@ -1,0 +1,21 @@
+databaseChangeLog:
+
+  - include:
+      file: category/category.yml
+      relativeToChangelogFile: true
+
+  - include:
+      file: question/question.yml
+      relativeToChangelogFile: true
+
+  - include:
+      file: question_category/question_category.yml
+      relativeToChangelogFile: true
+
+  - include:
+      file: answer/answer.yml
+      relativeToChangelogFile: true
+
+  - include:
+      file: user_answer/user_answer.yml
+      relativeToChangelogFile: true

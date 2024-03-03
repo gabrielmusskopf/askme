@@ -1,14 +1,12 @@
 spring:
+  liquibase:
+    enabled: true
+    change-log: liquibase/liquibase-changelog.yml
+    contexts: default
   datasource:
-    url: jdbc:h2:mem:mydb
-    driver-class-name: org.h2.Driver
-    username: sa
-    password: pass
-  jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-  h2:
-    console:
-      enabled: true
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/postgres
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:pass}
 
 logging:
   level:

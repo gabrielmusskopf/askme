@@ -39,6 +39,7 @@ public class Question {
   private Level level;
 
   @OneToMany
+  @JoinColumn(name = "question_id")
   private List<Answer> answers;
 
   @ManyToMany
@@ -53,10 +54,9 @@ public class Question {
 
   private LocalDateTime updatedAt;
 
-  public Question(String text, Level level, List<Answer> answers, List<Category> categories) {
+  public Question(String text, Level level, List<Category> categories) {
     this.text = text;
     this.level = level;
-    this.answers = answers;
     this.categories = categories;
     this.createdAt = LocalDateTime.now();
     this.updatedAt = LocalDateTime.now();

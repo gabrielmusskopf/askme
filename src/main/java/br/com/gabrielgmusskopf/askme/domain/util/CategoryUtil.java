@@ -8,7 +8,7 @@ import lombok.experimental.UtilityClass;
 @UtilityClass
 public class CategoryUtil {
 
-  private static final String SPECIAL_CHARACTERS_REGEX = "[^a-zA-Z0-9]";
+  private static final String SPECIAL_CHARACTERS_REGEX = "[^\\p{L}\\p{N}\s]+";
   private static final String SPACE_REPLACER_CHARACTER = "_";
 
   public List<String> normalizeAll(List<String> categories) {
@@ -18,8 +18,9 @@ public class CategoryUtil {
   public String normalize(String category) {
     return Normalizer.normalize(category, Form.NFD)
         .replaceAll("\\p{M}", "")
-        .replace(SPECIAL_CHARACTERS_REGEX, "")
+        .replaceAll(SPECIAL_CHARACTERS_REGEX, "")
         .toUpperCase()
+        .trim()
         .replace(" ", SPACE_REPLACER_CHARACTER).trim();
   }
 

@@ -46,8 +46,9 @@ class QuestionController {
   @GetMapping("/random")
   public List<QuestionDTO> getRandom(@RequestParam(name = "quantity", defaultValue = "1") int quantity,
                                      @RequestParam(name = "level", required = false) Level level,
-                                     @RequestParam(name = "category", required = false) List<String> categories) {
-    return getQuestionsService.get(new GetQuestionsDTO(quantity, level, categories))
+                                     @RequestParam(name = "category", required = false) List<String> categories,
+                                     @RequestParam(name = "answered", required = false) Boolean answered) {
+    return getQuestionsService.get(new GetQuestionsDTO(quantity, level, categories, answered))
         .stream()
         .map(QuestionMapper::toDTO)
         .toList();

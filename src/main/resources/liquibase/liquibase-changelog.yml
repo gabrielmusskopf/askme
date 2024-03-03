@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - property:
+      dbms: postgresql
+      name: id_function
+      value: gen_random_uuid()
+
+  - include:
+      file: v0/v0.yml
+      relativeToChangelogFile: true

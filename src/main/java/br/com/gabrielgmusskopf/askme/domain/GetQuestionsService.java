@@ -10,7 +10,7 @@ public interface GetQuestionsService {
 
   List<Question> get(GetQuestionsDTO getQuestions);
 
-  record GetQuestionsDTO(int quantity, Level level, List<String> categories) {
+  record GetQuestionsDTO(int quantity, Level level, List<String> categories, Boolean answered) {
   }
 
 }

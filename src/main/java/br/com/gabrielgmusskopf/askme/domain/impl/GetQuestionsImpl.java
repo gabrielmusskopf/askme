@@ -2,11 +2,11 @@ package br.com.gabrielgmusskopf.askme.domain.impl;
 
 import br.com.gabrielgmusskopf.askme.domain.GetQuestionsService;
 import br.com.gabrielgmusskopf.askme.domain.exception.NotFoundException;
+import br.com.gabrielgmusskopf.askme.domain.util.CollectorUtil;
 import br.com.gabrielgmusskopf.askme.domain.util.MathUtil;
 import br.com.gabrielgmusskopf.askme.infra.data.QuestionRepository;
 import br.com.gabrielgmusskopf.askme.infra.data.QuestionSpecification;
 import br.com.gabrielgmusskopf.askme.model.Question;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 class GetQuestionsImpl implements GetQuestionsService {
 
   private static final int DEFAULT_PAGE_SIZE = 20;
+
   private final QuestionRepository questionRepository;
 
   @Override
@@ -36,14 +37,15 @@ class GetQuestionsImpl implements GetQuestionsService {
     if (questionRepository.count() == 0) {
       return Collections.emptyList();
     }
+
+    log.debug("Searching for {} questions with any of {} categories.", getQuestions.level(), getQuestions.categories());
     final var questionPage = getRandomQuestionPage(getQuestions);
     if (!questionPage.hasContent()) {
       return Collections.emptyList();
     }
-    log.debug("Searching for {} questions with any of {} categories.", getQuestions.level(), getQuestions.categories());
 
-    final var questions = new ArrayList<>(questionPage.getContent());
-    Collections.shuffle(questions);
+    final var questions = questionPage.getContent().stream()
+        .collect(CollectorUtil.toShuffledList());
 
     return questions.subList(0, Math.min(getQuestions.quantity(), questions.size()));
   }
@@ -56,8 +58,9 @@ class GetQuestionsImpl implements GetQuestionsService {
     log.debug("Random page {} of {}", randomPage, pagesNumber);
 
     Specification<Question> spec = QuestionSpecification
-        .hasLevel(getQuestions.level())
-        .and(QuestionSpecification.hasAnyCategory(getQuestions.categories()));
+        .hasAnyCategory(getQuestions.categories())
+        .and(QuestionSpecification.hasLevel(getQuestions.level()))
+        .and(QuestionSpecification.isNotAnswered(getQuestions.answered()));
 
     return questionRepository.findAll(spec, page);
   }

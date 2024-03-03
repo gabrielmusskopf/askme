@@ -13,6 +13,8 @@ import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -31,14 +33,14 @@ class CreateCategoryImpl implements CreateCategoryService {
   }
 
   @Override
+  @Transactional(propagation = Propagation.REQUIRES_NEW)
   public List<Category> findOrCreate(List<String> categories) {
     if (categories == null || categories.isEmpty()) {
       return Collections.emptyList();
     }
     log.debug("Finding or creating categories");
-    final var existingCategories = categoryRepository.findByNameInIgnoreCase(categories);
-    final var existingCategoriesNames = existingCategories.stream().map(Category::getName).map(String::toUpperCase)
-        .toList();
+    final var existingCategories = categoryRepository.findByNameInIgnoreCase(CategoryUtil.normalizeAll(categories));
+    final var existingCategoriesNames = existingCategories.stream().map(Category::getName).toList();
 
     final var newCategories = categories.stream()
         .filter(Objects::nonNull)

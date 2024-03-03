@@ -49,7 +49,7 @@ class CreateCategoryImplTest {
   @Test
   void shouldCreateNormalizedNewCategories() {
     // Arange
-    final var categories = List.of(" !? %& Jávâ !@#$%¨&*())_+=- ", "Prǒgràmmíñg Lǻnguáge");
+    final var categories = List.of("Jávâ !@#$%¨&*())_+=- ", "Prǒgràmmíñg Lǻnguáge");
     final var savedCategoriesNames = List.of("JAVA", "PROGRAMMING_LANGUAGE");
 
     when(categoryRepository.findByNameInIgnoreCase(categories)).thenReturn(Collections.emptyList());
@@ -60,14 +60,14 @@ class CreateCategoryImplTest {
     // Assert
     assertThat(response)
         .extracting(Category::getName)
-        .containsAnyElementsOf(savedCategoriesNames);
+        .containsExactlyInAnyOrderElementsOf(savedCategoriesNames);
 
     verify(categoryRepository).saveAll(categoriesCaptor.capture());
     final var savedCategories = categoriesCaptor.getValue();
 
     assertThat(savedCategories)
         .extracting(Category::getName)
-        .containsAnyElementsOf(savedCategoriesNames);
+        .containsExactlyInAnyOrderElementsOf(savedCategoriesNames);
   }
 
   @Test
@@ -76,7 +76,7 @@ class CreateCategoryImplTest {
     final var categories = List.of("Jávâ", "Prǒgràmmíñg Lǻnguáge");
     final var savedCategoriesNames = List.of("PROGRAMMING_LANGUAGE");
     final var foundCategoriesNames = List.of("JAVA", "PROGRAMMING_LANGUAGE");
-    final var existingCategories = List.of(new Category("Java"));
+    final var existingCategories = List.of(new Category("JAVA"));
 
     when(categoryRepository.findByNameInIgnoreCase(categories)).thenReturn(existingCategories);
 
@@ -86,14 +86,14 @@ class CreateCategoryImplTest {
     // Assert
     assertThat(response)
         .extracting(Category::getName)
-        .containsAnyElementsOf(foundCategoriesNames);
+        .containsExactlyInAnyOrderElementsOf(foundCategoriesNames);
 
     verify(categoryRepository).saveAll(categoriesCaptor.capture());
     final var savedCatedories = categoriesCaptor.getValue();
 
     assertThat(savedCatedories)
         .extracting(Category::getName)
-        .containsAnyElementsOf(savedCategoriesNames);
+        .containsExactlyInAnyOrderElementsOf(savedCategoriesNames);
   }
 
 }

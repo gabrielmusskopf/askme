@@ -1,0 +1,28 @@
+databaseChangeLog:
+  - changeSet:
+      id: question-category-table-creation
+      author: gabrielgmusskopf
+      changes:
+        - createTable:
+            tableName: question_category
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  defaultValueComputed: ${id_function}
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: question_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_category_question
+                    references: question(id)
+              - column:
+                  name: category_id
+                  type: uuid
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_user_category_category
+                    references: category(id)

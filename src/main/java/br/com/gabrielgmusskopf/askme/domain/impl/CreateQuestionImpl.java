@@ -37,15 +37,14 @@ class CreateQuestionImpl implements CreateQuestionService {
 
     log.debug("Creating question");
     final var categories = createCategoryService.findOrCreate(createQuestion.categories());
+    final var question = questionRepository.save(
+        new Question(createQuestion.text(), createQuestion.level(), categories)
+    );
     final var answers = createQuestion.answers().stream()
-        .map(a -> new Answer(a.text(), a.isRight()))
+        .map(a -> new Answer(a.text(), question, a.isRight()))
         .toList();
 
     answerRepository.saveAll(answers);
-    final var question = questionRepository.save(
-        new Question(createQuestion.text(), createQuestion.level(), answers, categories)
-    );
-
     log.info("Question {} created", question.getId());
 
     return question;
