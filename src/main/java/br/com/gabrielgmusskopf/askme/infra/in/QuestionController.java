@@ -5,22 +5,15 @@ import br.com.gabrielgmusskopf.askme.domain.AnswerQuestionService.QuestionAnswer
 import br.com.gabrielgmusskopf.askme.domain.CreateQuestionService;
 import br.com.gabrielgmusskopf.askme.domain.CreateQuestionService.CreateQuestionDTO;
 import br.com.gabrielgmusskopf.askme.domain.GetQuestionsService;
-import br.com.gabrielgmusskopf.askme.domain.GetQuestionsService.GetQuestionsDTO;
+import br.com.gabrielgmusskopf.askme.domain.GetQuestionsService.GetQuestionsParamsDTO;
 import br.com.gabrielgmusskopf.askme.domain.enums.Level;
 import br.com.gabrielgmusskopf.askme.domain.exception.BusinessException;
 import br.com.gabrielgmusskopf.askme.domain.exception.NotFoundException;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("v1/questions")
@@ -48,7 +41,7 @@ class QuestionController {
                                      @RequestParam(name = "level", required = false) Level level,
                                      @RequestParam(name = "category", required = false) List<String> categories,
                                      @RequestParam(name = "answered", required = false) Boolean answered) {
-    return getQuestionsService.get(new GetQuestionsDTO(quantity, level, categories, answered))
+    return getQuestionsService.get(new GetQuestionsParamsDTO(quantity, level, categories, answered))
         .stream()
         .map(QuestionMapper::toDTO)
         .toList();

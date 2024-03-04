@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -33,13 +34,14 @@ class GetQuestionsImpl implements GetQuestionsService {
   }
 
   @Override
-  public List<Question> get(GetQuestionsDTO getQuestions) {
+  public List<Question> get(GetQuestionsParamsDTO params) {
     if (questionRepository.count() == 0) {
       return Collections.emptyList();
     }
 
-    log.debug("Searching for {} questions with any of {} categories.", getQuestions.level(), getQuestions.categories());
-    final var questionPage = getRandomQuestionPage(getQuestions);
+    log.debug("Searching for {} questions with any of {} categories.", params.level(), params.categories());
+    final var page = getRandomPage(params);
+    final var questionPage = getQuestions(params, page);
     if (!questionPage.hasContent()) {
       return Collections.emptyList();
     }
@@ -47,20 +49,23 @@ class GetQuestionsImpl implements GetQuestionsService {
     final var questions = questionPage.getContent().stream()
         .collect(CollectorUtil.toShuffledList());
 
-    return questions.subList(0, Math.min(getQuestions.quantity(), questions.size()));
+    return questions.subList(0, Math.min(params.quantity(), questions.size()));
   }
 
-  private Page<Question> getRandomQuestionPage(GetQuestionsDTO getQuestions) {
-    final int pageSize = Math.max(getQuestions.quantity(), DEFAULT_PAGE_SIZE);
+  private Pageable getRandomPage(GetQuestionsParamsDTO params) {
+    final int pageSize = Math.max(params.quantity(), DEFAULT_PAGE_SIZE);
     final long pagesNumber = questionRepository.count() / pageSize;
     final int randomPage = (int) MathUtil.random(0, pagesNumber);
-    final var page = PageRequest.of(randomPage, pageSize);
     log.debug("Random page {} of {}", randomPage, pagesNumber);
 
+    return PageRequest.of(randomPage, pageSize);
+  }
+
+  private Page<Question> getQuestions(GetQuestionsParamsDTO params, Pageable page) {
     Specification<Question> spec = QuestionSpecification
-        .hasAnyCategory(getQuestions.categories())
-        .and(QuestionSpecification.hasLevel(getQuestions.level()))
-        .and(QuestionSpecification.isNotAnswered(getQuestions.answered()));
+        .hasAnyCategory(params.categories())
+        .and(QuestionSpecification.hasLevel(params.level()))
+        .and(QuestionSpecification.isNotAnswered(params.answered()));
 
     return questionRepository.findAll(spec, page);
   }

@@ -8,9 +8,9 @@ public interface GetQuestionsService {
 
   Question get(String id);
 
-  List<Question> get(GetQuestionsDTO getQuestions);
+  List<Question> get(GetQuestionsParamsDTO getQuestions);
 
-  record GetQuestionsDTO(int quantity, Level level, List<String> categories, Boolean answered) {
+  record GetQuestionsParamsDTO(int quantity, Level level, List<String> categories, Boolean answered) {
   }
 
 }

@@ -5,10 +5,10 @@ import br.com.gabrielgmusskopf.askme.model.Category;
 import br.com.gabrielgmusskopf.askme.model.Question;
 import br.com.gabrielgmusskopf.askme.model.UserAnswer;
 import jakarta.persistence.criteria.Join;
-import jakarta.persistence.criteria.Root;
-import jakarta.persistence.criteria.Subquery;
 import java.util.List;
+import java.util.UUID;
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.data.jpa.domain.Specification;
 
 @UtilityClass
@@ -38,10 +38,13 @@ public class QuestionSpecification {
       if (answered == null) {
         return cb.conjunction();
       }
-      Subquery<Long> subquery = query.subquery(Long.class);
-      Root<UserAnswer> userQuestionRoot = subquery.from(UserAnswer.class);
-      subquery.select(cb.count(userQuestionRoot)).where(cb.equal(userQuestionRoot.get("question"), root));
-      return cb.isNull(subquery);
+      final var subquery = query.subquery(UUID.class);
+      subquery.select(subquery.from(UserAnswer.class).get("question").get("id"));
+
+      if (BooleanUtils.isFalse(answered)) {
+        return cb.not(root.get("id").in(subquery));
+      }
+      return root.get("id").in(subquery);
     };
   }
 
